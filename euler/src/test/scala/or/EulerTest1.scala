@@ -3,7 +3,7 @@ package or
 import org.specs2.mutable._
 import scala.annotation.tailrec
 
-class EulerTest extends Specification {
+class EulerTest1 extends Specification {
 
   def e1(in: Int) = {
     @tailrec def reqE1(acc: Int, n: Int): Int = {
