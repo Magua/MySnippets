@@ -4,30 +4,45 @@ import org.specs2.mutable._
 import scala.annotation.tailrec
 
 class EulerTest3 extends Specification {
+  def sqrt(number : BigInt) = {
+    def next(n : BigInt, i : BigInt) : BigInt = (n + i/n) >> 1
 
+    val one = BigInt(1)
+
+    var n = one
+    var n1 = next(n, number)
+    
+    while ((n1 - n).abs > one) {
+      n = n1
+      n1 = next(n, number)
+    }
+     
+    while (n1 * n1 > number) {
+      n1 -= one
+    }
+     
+    n1
+  }
   def isPrime(n: BigInt): Boolean = {
     @tailrec def isPrimeReq(rN: BigInt): Boolean = {
-      if (rN <= 1) true 
+      if (rN <= 1) true
       else if (n % rN == 0) false
       else isPrimeReq(rN - 2)
     }
     val l = System.currentTimeMillis
     val even = n % 2 == 0
-    val result = !even && isPrimeReq(n - 2)
-    println((System.currentTimeMillis - l) / 1000)
+    val result = !even && isPrimeReq(sqrt(n))
+    //println((System.currentTimeMillis - l) / 1000.0)
     result
   }
-  def e3(n: Int) = {
-//    @tailrec def reqE2(acc: Int, lastTwo: (Int, Int)): Int = {
-//      val fib = lastTwo._1 + lastTwo._2
-//      if (fib > max) acc
-//      else if (fib % 2 == 0) reqE2(acc + fib, (lastTwo._2 -> fib))
-//      else reqE2(acc, (lastTwo._2 -> fib))
-//    }
-//    if (max < 2) 0
-//    else if (max == 2) 2
-//    else reqE2(2, (1 -> 2))
+  def e3BiggestPrimeFactor(n: BigInt) = {
+   @tailrec def reqBiggestPrimeFactor(nn: BigInt): BigInt = {
+     if (isPrime(nn) && n % nn == 0) nn
+     else reqBiggestPrimeFactor(nn - 1)
+   }
+   reqBiggestPrimeFactor(n - 1)
   }
+
   "Calculating largest prime factors we" should {
 	  "not make 4 a prime" in {
 		  isPrime(4) must equalTo(false)
@@ -69,16 +84,11 @@ class EulerTest3 extends Specification {
     "NOT make 99999991 a prime" in {
     	isPrime(99999991) must equalTo(false)
     }
-//    "not make 600851475143 a prime" in {
-//    	isPrime(600851475143L) must equalTo(false)
-//    }
-//    "make 5754853343 a prime" in {
-//    	isPrime(5754853343L) must equalTo(true)
-//    }
-    
-//    "not make 5754853344 a prime" in {
-//    	isPrime(5754853344L) must equalTo(false)
-//    }
-    
+   "find 600851475143 lagest prime factor" in {
+   	e3BiggestPrimeFactor(13195 ) must equalTo(29)
+   }
+   //"find 600851475143 lagest prime factor" in {
+   // e3BiggestPrimeFactor(600851475143L) must equalTo(59569)
+   //}
   }
 }
