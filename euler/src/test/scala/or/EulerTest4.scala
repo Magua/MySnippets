@@ -13,8 +13,10 @@ class EulerTest4 extends Specification {
     @tailrec def lppReq(n1: Int, n2: Int): Int = {
       val p = n1 * n2
       if (isPalindromic(p)) {
-    	println(n1 + " * " + n2 + " = " + p)
-    	if (p > maxPalindrom) maxPalindrom = p
+    	if (p > maxPalindrom) {
+    	  maxPalindrom = p
+		  println(n1 + " * " + n2 + " = " + p)
+    	}
       }
       var nn1 = n1
       var nn2 = n2
