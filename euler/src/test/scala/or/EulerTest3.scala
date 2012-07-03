@@ -24,10 +24,7 @@ class EulerTest3 extends Specification {
     if (n <= 1) false
     else if (n == 2) true
     else if (n % 2 == 0) false
-    else {
-      val result = isPrimeReq(n, 3)
-      result
-    }
+    else isPrimeReq(n, 3)
   }
   def e3BiggestPrimeFactor(n: BigInt) = {
    @tailrec def reqBiggestPrimeFactor(nn: BigInt): BigInt = {
@@ -58,7 +55,7 @@ class EulerTest3 extends Specification {
    	e3BiggestPrimeFactor(13195) must equalTo(29)
    }
    "find 600851475143 lagest prime factor" in {
-    e3BiggestPrimeFactor(600851475143L) must equalTo(59569)
+    e3BiggestPrimeFactor(600851475143L) must equalTo(6857)
    }
   }
 }
