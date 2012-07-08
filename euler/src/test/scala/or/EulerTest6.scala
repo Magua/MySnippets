@@ -6,7 +6,7 @@ import scala.annotation.tailrec
 class EulerTest6 extends Specification {
   def sqSumAndSumSqDiff(max: Int): Int = {
     val list = (1 to max).toList
-	val sqSum = list.map(x => x*x).sum
+	val sqSum = list.foldLeft(0)((old, ny) => old + ny * ny)
 	val listSum = list.sum
 	val sumSq = listSum * listSum
     sumSq - sqSum
