@@ -4,7 +4,7 @@ import org.specs2.mutable._
 import scala.annotation.tailrec
 object EulerTest3 {
   def isPrime(n: BigInt): Boolean = {
-    val sq = Math.floor(Math.sqrt(n.toDouble)).toInt
+    val sq = math.round(math.sqrt(n.toDouble)).toInt
     @tailrec def isPrimeReq(rN: BigInt, from: Int): Boolean = {
       if (from > sq)
         true
