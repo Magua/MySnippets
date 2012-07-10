@@ -67,9 +67,7 @@ class EulerTest011 extends Specification {
   def getList(grid: List[List[Int]], xy: Point, length: Int, direction: Direction) = {
     val list = new ListBuffer[Point]() += xy
     for (i <- 1 to length) list += getDestination(grid, xy, i, direction)
-    val l = list.toList
-    println(l + " " + l.map(get(grid, _)).reverse)
-    l
+    list.toList
   }
   def greatestProductFromPoint(grid: List[List[Int]], xy: Point, length: Int) =
     Direction.values.foldLeft(0)((p, d) => p max product(grid, xy, length - 1, d))
