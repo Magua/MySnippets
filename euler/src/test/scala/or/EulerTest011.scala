@@ -34,7 +34,7 @@ class EulerTest011 extends Specification {
     val Up, Right, DiagonalyRight, DiagonalyLeft = Value
   }
   import Direction._
-  def exist(grid: List[List[Int]], xy: (Int, Int), length: Int, direction: Direction) = {
+  def exist(grid: List[List[Int]], xy: Point, length: Int, direction: Direction) = {
     try {
       get(grid, xy)
       direction match {
@@ -48,121 +48,121 @@ class EulerTest011 extends Specification {
       }
     }
   }
-  def product(grid: List[List[Int]], xy: (Int, Int), length: Int, direction: Direction) = {
+  def product(grid: List[List[Int]], xy: Point, length: Int, direction: Direction) = {
     try {
       getList(grid, xy, length, direction).foldLeft(1)((n, xy) => n * get(grid, xy))
     } catch {
       case e: Exception => 0
     }
   }
-  def get(grid: List[List[Int]], xy: (Int, Int)) = grid(xy._2)(xy._1)
-  def getDestination(grid: List[List[Int]], xy: (Int, Int), length: Int, direction: Direction) = {
+  def get(grid: List[List[Int]], xy: Point) = grid(xy.y)(xy.x)
+  def getDestination(grid: List[List[Int]], xy: Point, length: Int, direction: Direction) = {
     direction match {
-      case Right => (xy._1 + length, xy._2)
-      case Up => (xy._1, xy._2 + length)
-      case DiagonalyRight => (xy._1 + length, xy._2 + length)
-      case DiagonalyLeft => (xy._1 - length, xy._2 + length)
+      case Right => Point(xy.x + length, xy.y)
+      case Up => Point(xy.x, xy.y + length)
+      case DiagonalyRight => Point(xy.x + length, xy.y + length)
+      case DiagonalyLeft => Point(xy.x - length, xy.y + length)
     }
   }
-  def getList(grid: List[List[Int]], xy: (Int, Int), length: Int, direction: Direction) = {
-    val list = new ListBuffer[(Int, Int)]() += xy
+  def getList(grid: List[List[Int]], xy: Point, length: Int, direction: Direction) = {
+    val list = new ListBuffer[Point]() += xy
     for (i <- 1 to length) list += getDestination(grid, xy, i, direction)
     val l = list.toList
-    println(l.map(get(grid, _)).reverse)
+    println(l + " " + l.map(get(grid, _)).reverse)
     l
   }
+  def greatestProductFromPoint(grid: List[List[Int]], xy: Point, length: Int) =
+    Direction.values.foldLeft(0)((p, d) => p max product(grid, xy, length - 1, d))
   def greatestProduct(grid: List[List[Int]], length: Int) = {
-	val xLen = grid.size - 1
-	val yLen = grid(0).size - 1
-    @tailrec def gpReq(x: Int, y: Int, gP: Int): Int = {
-      if (x == xLen && y == yLen)
-        return gP
-      val p = gP max Direction.values.foldLeft(0)((p, d) => p max product(grid, (x, y), length, d))
-
-      if (x <= y)
-        gpReq(x + 1, y, p)
-      else
-        gpReq(x, y + 1, p)
+    val xLen = grid.size
+    val yLen = grid(0).size
+    @tailrec def gpReq(xy: Point, gP: Int): Int = {
+      xy match {
+        case Point(x, y) if Point(x, y).equals(Point(xLen, yLen)) => gP
+        case Point(x, y) if y < yLen => gpReq(Point(x, y + 1), gP max greatestProductFromPoint(grid, Point(x, y + 1), length))
+        case Point(x, y) if x < xLen => gpReq(Point(x + 1, 0), gP max greatestProductFromPoint(grid, Point(x + 1, 0), length))
+      }
     }
-    gpReq(0, 0, 0)
+    gpReq(Point(0, 0), greatestProductFromPoint(grid, Point(0, 0), length))
   }
   "What is the greatest product of four adjacent numbers in any direction (up, down, left, right, or diagonally) in the 20×20 grid?" should {
-//    "verify a few grid locations" in {
-//      get(grid, (0, 0)) must equalTo(1)
-//      get(grid, (2, 7)) must equalTo(0)
-//      get(grid, (19, 19)) must equalTo(8)
-//    }
-//    "verify exist method" in {
-//      exist(grid, (0, 0), 19, Up) must equalTo(true)
-//      exist(grid, (2, 19), 4, Right) must equalTo(true)
-//      exist(grid, (16, 16), 3, DiagonalyRight) must equalTo(true)
-//      exist(grid, (2, 19), 1, Up) must equalTo(false)
-//      exist(grid, (17, 16), 3, Right) must equalTo(false)
-//    }
+    "verify a few grid locations" in {
+      get(grid, Point(0, 0)) must equalTo(1)
+      get(grid, Point(2, 7)) must equalTo(0)
+      get(grid, Point(19, 19)) must equalTo(8)
+    }
+    "verify exist method" in {
+      exist(grid, Point(0, 0), 19, Up) must equalTo(true)
+      exist(grid, Point(2, 19), 4, Right) must equalTo(true)
+      exist(grid, Point(16, 16), 3, DiagonalyRight) must equalTo(true)
+      exist(grid, Point(2, 19), 1, Up) must equalTo(false)
+      exist(grid, Point(17, 16), 3, Right) must equalTo(false)
+    }
     "verify getDestination method" in {
-      getDestination(grid, (0, 0), 4, Up) must equalTo((0, 4))
-      getDestination(grid, (0, 0), 4, DiagonalyRight) must equalTo((4, 4))
-      getDestination(grid, (0, 0), 4, Right) must equalTo((4, 0))
-      getDestination(grid, (0, 0), 4, DiagonalyLeft) must equalTo((-4, 4))
+      getDestination(grid, Point(0, 0), 4, Up) must equalTo(Point(0, 4))
+      getDestination(grid, Point(0, 0), 4, DiagonalyRight) must equalTo(Point(4, 4))
+      getDestination(grid, Point(0, 0), 4, Right) must equalTo(Point(4, 0))
+      getDestination(grid, Point(0, 0), 4, DiagonalyLeft) must equalTo(Point(-4, 4))
     }
-//    "verify getList method" in {
-//      getList(grid, (0, 0), 1, Up) must equalTo(List((0, 0), (0, 1)))
-//      getList(grid, (0, 0), 1, DiagonalyRight) must equalTo(List((0, 0), (1, 1)))
-//      getList(grid, (0, 0), 1, Right) must equalTo(List((0, 0), (1, 0)))
-//    }
-//    "verify product method" in {
-//      product(grid, (0, 0), 3, Up) must equalTo(1600)
-//      product(grid, (0, 0), 1, DiagonalyRight) must equalTo(73)
-//      product(grid, (0, 0), 1, Right) must equalTo(70)
-//      product(grid, (3, 0), 3, DiagonalyLeft) must equalTo(685860)
-//    }
-//    "verify greatest product in the grid" in {
-//      val g = List(
-//        List(1, 10),
-//        List(6, 8))
-//      greatestProduct(g, 1) must equalTo(80)
-//    }
-//    "verify greatest product in the grid" in {
-//      val g = List(
-//        List(1, 10, 3),
-//        List(6, 8, 4),
-//        List(7, 5, 9))
-//      greatestProduct(g, 1) must equalTo(80)
-//    }
-//    "verify greatest product in the grid" in {
-//      val g = List(
-//        List(2, 1, 1, 1),
-//        List(1, 2, 1, 1),
-//        List(1, 1, 2, 1),
-//        List(1, 1, 1, 2))
-//      greatestProduct(g, 3) must equalTo(16)
-//    }
-//    "verify greatest product in the grid" in {
-//      val g = List(
-//        List(2, 1, 1, 1),
-//        List(2, 1, 1, 1),
-//        List(2, 1, 1, 1),
-//        List(2, 1, 1, 1))
-//      greatestProduct(g, 3) must equalTo(16)
-//    }
-//    "verify greatest product in the grid" in {
-//    	val g = List(
-//    			List(1, 1, 1, 1),
-//    			List(1, 1, 1, 1),
-//    			List(1, 1, 1, 1),
-//    			List(2, 2, 2, 2))
-//    			greatestProduct(g, 3) must equalTo(16)
-//    }
+    "verify getList method" in {
+      getList(grid, Point(0, 0), 1, Up) must equalTo(List(Point(0, 0), Point(0, 1)))
+      getList(grid, Point(0, 0), 1, DiagonalyRight) must equalTo(List(Point(0, 0), Point(1, 1)))
+      getList(grid, Point(0, 0), 1, Right) must equalTo(List(Point(0, 0), Point(1, 0)))
+    }
+    "verify product method" in {
+      product(grid, Point(0, 0), 3, Up) must equalTo(1600)
+      product(grid, Point(0, 0), 1, DiagonalyRight) must equalTo(73)
+      product(grid, Point(0, 0), 1, Right) must equalTo(70)
+      product(grid, Point(3, 0), 3, DiagonalyLeft) must equalTo(685860)
+    }
     "verify greatest product in the grid" in {
-    	val g = List(
-    			List(1, 1, 1, 2),
-    			List(1, 1, 1, 2),
-    			List(1, 1, 1, 2),
-    			List(1, 1, 1, 2))
-    			greatestProduct(g, 3) must equalTo(16)
+      val g = List(
+        List(1, 10),
+        List(6, 8))
+      greatestProduct(g, 2) must equalTo(80)
     }
-    //    "verify greatest product in the grid" in {
-    //      greatestProduct(grid, 3) must equalTo()
-    //    }
+    "verify greatest product in the grid" in {
+      val g = List(
+        List(1, 10, 3),
+        List(6, 8, 4),
+        List(7, 5, 9))
+      greatestProduct(g, 2) must equalTo(80)
+    }
+    "verify greatest product in the grid" in {
+      val g = List(
+        List(2, 1, 1, 1),
+        List(1, 2, 1, 1),
+        List(1, 1, 2, 1),
+        List(1, 1, 1, 2))
+      greatestProduct(g, 4) must equalTo(16)
+    }
+    "verify greatest product in the grid" in {
+      val g = List(
+        List(2, 1, 1, 1),
+        List(2, 1, 1, 1),
+        List(2, 1, 1, 1),
+        List(2, 1, 1, 1))
+      greatestProduct(g, 4) must equalTo(16)
+    }
+    "verify greatest product in the grid" in {
+      val g = List(
+        List(1, 1, 1, 1),
+        List(1, 1, 1, 1),
+        List(1, 1, 1, 1),
+        List(2, 2, 2, 2))
+      greatestProduct(g, 4) must equalTo(16)
+    }
+    "verify greatest product in the grid" in {
+      val g = List(
+        List(1, 1, 1, 2),
+        List(1, 1, 1, 2),
+        List(1, 1, 1, 2),
+        List(1, 1, 1, 2))
+      greatestProduct(g, 4) must equalTo(16)
+    }
+    "verify greatest product in the grid" in {
+      greatestProduct(grid, 4) must equalTo(70600674)
+    }
   }
 }
+case class Point(x: Int, y: Int)
