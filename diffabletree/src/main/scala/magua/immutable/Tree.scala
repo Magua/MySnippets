@@ -1,45 +1,42 @@
 package magua.immutable
 
+import scala.collection.mutable.StringBuilder
+
 object Tree {
 }
-case class Tree(k: String, v: Option[String] = None, p: Option[Tree] = None, c: Option[List[Tree]] = None) {
+case class Tree(k: String, v: Option[String] = None, c: List[Tree] = Nil, p: Option[Tree] = None) {
   implicit def augmentString(x: String): Tree = Tree(x)
   
-  def /(k: String): Tree = {
-    val a: List[String] = k.split("\\.").toList
-    this / a
-  }
-  def /(a: List[String]): Tree = {
-    println(a)
-    val b = c.find(a.head == _).getOrElse(throw new RuntimeException(k + " '" + a.head + "' not found in tree")).head
-    if (a.length > 1) {
-      b / a.tail
-    }
-    else {
-      b
-    }
-  }
-  def ++(k: String): Tree = {
-    this ++ (k, None)
-  }
-  def ++(k: String, v: Option[String]): Tree = {
-    this ++ (k.split("\\.").toList, v)
-  }
-  def ++(a: List[String], v: Option[String]): Tree = {
-    if (a.length > 1) {
-      val n = this ++ (a.tail, v)
-      println("called with a.tail=" + a.tail + " return n=" + n)
-      new Tree(k=a.head, c=Some(List(n)), v=v, p=Some(this))
-    }
-    else {
-      Tree(k=a.head, v=v, p=Some(this))
-    }
-  }
-  def toTreeString() {
-    def toTreeString(level: Int, tree: Tree) {
+  def addReplaceChild(child: Tree): Tree = {
+    val newChild = child.copy(p=Some(this))
+    val idx = c.indexWhere(_.k == newChild.k)
+    val newMe = copy(c = if (idx != -1)
+      c.patch(idx, Seq(newChild), 1)
+    else
+      c :+ newChild)
       
-    }
+    rec(newMe)
   }
-  def ===(v: String) = Tree(k, Some(v))
-  def ===(v: (String, String)) = Tree(v._1, Some(v._2))
+  def rec(newTree: Tree): Tree = {
+    if (p.isDefined)
+      p.get.addReplaceChild(newTree)
+    else
+      newTree
+  }
+  def addReplaceValue(value: String): Tree = {
+      val newCopy = copy(v=Some(value))
+      rec(newCopy.copy(c=c.map(_.copy(p=Some(newCopy)))))
+  }
+  private def toTreeStringP(level: Int, sb: String): String = {
+    val s = sb + ("  " * level) + (if (p.isDefined) "*" else "") + (k + (if(v.isDefined) "=" + v.get else "")) + "\n"
+    c.foldLeft(s)((nS, nT) => nT.toTreeStringP(level + 1, nS))
+  }
+  def toTreeString(): String = {
+    toTreeStringP(0, "\n")
+  }
+
+  def /(key: String): Tree = {
+    c.find(t => key.equals(t.k)).getOrElse(throw new RuntimeException())
+  }
+  def ===(v: String) = addReplaceValue(v)
 }
