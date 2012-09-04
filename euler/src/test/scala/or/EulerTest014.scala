@@ -55,6 +55,7 @@ class EulerTest014 extends Specification {
       0 must equalTo(0)
       longestStreamStartingAtUnderN(2) must equalTo((1, 1))
       longestStreamStartingAtUnderN(5) must equalTo((3, 8, 16))
+      // the collatzStream peaks at 57 billions, dont use an Int as I did initially
       longestStreamStartingAtUnderN(1000000) must equalTo((837799,525, 56991483520L))
     }
   }
