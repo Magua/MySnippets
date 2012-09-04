@@ -106,26 +106,25 @@ class EulerTest013 extends Specification {
 72107838435069186155435662884062257473692284509516
 20849603980134001723930671666823555245252804609722
 53503534226472524250874054075591789781264330331690""".split('\n').toList
-  
 
-val twoTwoDigitNumbers = List("12", "34")
-val twoBigTwoDigitNumbers = List("99", "99")
-
+  val twoTwoDigitNumbers = List("12", "34")
+  val twoBigTwoDigitNumbers = List("99", "99")
+  val OVERFLOW_INDICATOR = "<"
   def toInt(c: Char) = (c + "").toInt
+  def overflow(s: String) = s.startsWith(OVERFLOW_INDICATOR)
+
   def addition(x: String, y: String) = {
-    val result = x.reverse.zipAll(y.reverse, '0', '0').foldLeft("") { (s, n) =>
-      {
-        val overflow = if (s.startsWith("<")) s.substring(1, 2).toInt else 0
-        val newS = if(s.startsWith("<")) s.substring(2) else s
-        val sum = toInt(n._1) + toInt(n._2) + overflow
+    val result = x.reverse.zipAll(y.reverse, '0', '0').foldLeft("") { (s, n) => {
+        val o = if (overflow(s)) s.substring(1, 2).toInt else 0
+        val newS = if (overflow(s)) s.substring(2) else s
+        val sum = toInt(n._1) + toInt(n._2) + o
         if (sum < 10)
           sum + newS
-        else {
-          "<" + sum + newS
-        }
+        else
+          OVERFLOW_INDICATOR + sum + newS
       }
     }
-    if(result.startsWith("<")) result.substring(1) else result
+    if (overflow(result)) result.substring(1) else result
   }
   def sum(numberList: List[String]) = numberList.foldLeft("")((n1, n2) => addition(n1, n2))
 
@@ -136,9 +135,9 @@ val twoBigTwoDigitNumbers = List("99", "99")
       addition("9", "999") must equalTo("1008")
     }
     "twoTwoDigitNumbers sum" in {
-    	sum(twoTwoDigitNumbers) must equalTo("46")
-    	sum(twoBigTwoDigitNumbers) must equalTo("198")
-    	sum(oneHundred50digitNumbers) must equalTo("5537376230390876637302048746832985971773659831892672")
+      sum(twoTwoDigitNumbers) must equalTo("46")
+      sum(twoBigTwoDigitNumbers) must equalTo("198")
+      sum(oneHundred50digitNumbers) must equalTo("5537376230390876637302048746832985971773659831892672")
     }
   }
 }
