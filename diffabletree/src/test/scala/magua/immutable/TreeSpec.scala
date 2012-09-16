@@ -41,5 +41,15 @@ se=magua
   *child=childvalue
 """)
     }
+    "be custructable with slashes" in {
+      var root = Tree("se")
+      root = root / "magua" / "key1" === "value1"
+      println(root.toTreeString())
+      root.toTreeString must equalTo(     
+"""
+se=magua
+  *child=childvalue
+""")
+    }
   }
 }
