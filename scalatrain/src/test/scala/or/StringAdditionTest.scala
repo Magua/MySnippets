@@ -14,7 +14,7 @@ class StringAdditionTest extends Specification {
       //      "1" minus "1" must equalTo("0")
       //      "2" minus "1" must equalTo("1")
       //      "1" minus "2" must equalTo("-1")
-      "10" minus "1" must equalTo("9")
+      //"10" minus "1" must equalTo("9")
       //"100000000000000000000000000000000000000000000000000000000000000000000000000000000000000" minus "99999999999999999999999999999999999999999999999999999999999999999999999999999999999999" must equalTo("1")
     }
   }
