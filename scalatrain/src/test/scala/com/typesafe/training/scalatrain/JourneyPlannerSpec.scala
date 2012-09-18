@@ -6,17 +6,13 @@ import TestData._
 class JourneyPlannerSpec extends Specification {
   "Journeyplanner" should {
     "contain a list of all the trains stations" in {
-      val t1 = Train("Big", 1, Seq(Time() -> STOCKHOLM, Time() -> GOTHENBURG))
-      val t2 = Train("Big", 1, Seq(Time() -> MALMO, Time() -> LULEA))
-      val jp = new JourneyPlanner(Set(t1, t2))
-      jp.stations must equalTo(Set(STOCKHOLM, GOTHENBURG, MALMO, LULEA))
+      new JourneyPlanner(ALL_TRAINS).stations must equalTo(ALL_STATIONS)
     }
-    "find all trains that contain a given stations" in {
-      val t1 = Train("Big", 1, Seq(Time() -> STOCKHOLM, Time() -> GOTHENBURG))
-      val t2 = Train("Big", 1, Seq(Time() -> MALMO, Time() -> LULEA))
-      val jp = new JourneyPlanner(Set(t1, t2))
-      jp.trainsAt(STOCKHOLM) must equalTo(Set(t1))
-      jp.trainsAt(MALMO) must equalTo(Set(t2))
+    "find all trains that contain a given station" in {
+      val jp = new JourneyPlanner(ALL_TRAINS)
+      jp.trainsAt(LULEA) must equalTo(ALL_TRAINS)
+      jp.trainsAt(MALMO) must equalTo(Set(LULEA_YSTAD, LULEA_MALMO))
+      jp.trainsAt(YSTAD) must equalTo(Set(LULEA_YSTAD))
     }
   }
 }
