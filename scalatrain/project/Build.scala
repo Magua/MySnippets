@@ -18,8 +18,8 @@ object Build extends Build {
         libraryDependencies ++= Seq(
           // Fill in dependencies later
         ),
-        retrieveManaged := true/*,
-        initialCommands in console := "import com.typesafe.training.scalatrain._"*/
+        retrieveManaged := true,
+        initialCommands in console := "import com.typesafe.training.scalatrain._"
       )
   )
 }
