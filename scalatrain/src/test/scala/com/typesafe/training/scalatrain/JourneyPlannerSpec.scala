@@ -14,5 +14,19 @@ class JourneyPlannerSpec extends Specification {
       jp.trainsAt(MALMO) must equalTo(Set(LULEA_YSTAD, LULEA_MALMO))
       jp.trainsAt(YSTAD) must equalTo(Set(LULEA_YSTAD))
     }
+    "find all trains that stops at a given station" in {
+      val jp = new JourneyPlanner(ALL_TRAINS)
+      jp.stopsAt(YSTAD)
+      jp.stopsAt(YSTAD) must equalTo(Set(
+        LULEA_YSTAD.schedule.filter(_._2 == YSTAD).head._1 ->
+          LULEA_YSTAD))
+    }
+    "find isShortTrip" in {
+      val jp = new JourneyPlanner(ALL_TRAINS)
+      jp.isShortTrip(LULEA, STOCKHOLM) must equalTo(true)
+      jp.isShortTrip(LULEA, GOTHENBURG) must equalTo(true)
+      jp.isShortTrip(LULEA, MALMO) must equalTo(false)
+      jp.isShortTrip(LULEA, YSTAD) must equalTo(false)
+    }
   }
 }

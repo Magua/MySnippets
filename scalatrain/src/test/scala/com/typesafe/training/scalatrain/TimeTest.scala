@@ -40,5 +40,13 @@ class TimeTest extends Specification {
       Time(minutes = -1) must throwAn[IllegalArgumentException]
       Time(minutes = 60) must throwAn[IllegalArgumentException]
     }
+    "have constructor minutes validation" in {
+      Time(1, 1).toString must equalTo("01:01")
+    }
+    "have correct order" in {
+      Time(1, 1) < Time(2, 2) must equalTo(true)
+      Time(3, 3) > Time(2, 2) must equalTo(true)
+      Time(3, 3) compareTo Time(3, 3) must equalTo(0)
+    }
   }
 }
