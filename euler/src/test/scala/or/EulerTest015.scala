@@ -34,7 +34,7 @@ class EulerTest015 extends Specification {
     }
     "How many routes are there through a 20×20 grid?" in {
 //		countRoutes(1) must equalTo(2)
-		actorCountRoutes(2) must equalTo(6)
+//		actorCountRoutes(2) must equalTo(6)
 //		countRoutes(3) must equalTo(20)
 //		countRoutes(4) must equalTo(70)
 //		countRoutes(5) must equalTo(252)
