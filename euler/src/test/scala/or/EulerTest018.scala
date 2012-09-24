@@ -31,32 +31,33 @@ val bigTriangle = """75
 04 62 98 27 23 09 70 98 73 93 38 53 60 04 23"""
 lazy val hugeTriangle = {
   val source = io.Source.fromURL(getClass.getResource("/euler67triangle.txt"))
-  //val lines = source .mkString
   val ll = source.getLines.toList
   source.close
   ll
 }
 
-  def maximumValuePath(triangleS: String): Int = {
-    maximumValuePathList(triangleS.split("\\n").toList)
+  def maxValuePath(triangleS: String): Int = {
+    maxValuePathList(triangleS.split("\\n").toList)
   }
-  def maximumValuePathList(triangle: List[String]): Int = {
-    val ll = triangle.map(_.split(" ").toList.map(_.toInt))
-    val s = ll.size
-    def rec(row: Int, col: Int): Int = {
-      val thisValue = ll(row)(col)
-      if (row + 1 < s)
-        thisValue + (rec(row + 1, col) max rec(row + 1, col + 1))
-      else
-        thisValue
+  def maxValuePathList(triangle: List[String]): Int = {
+    val l = triangle.reverse.map(_.split(" ").toList.map(_.toInt))
+    val size = l.size
+    def rec(current: List[Int], i: Int): Int = {
+      if (current.size == 1)
+        current(0)
+      else {
+        val newList = l(i).view.zipWithIndex.map(t => t._1 + (current(t._2) max current(t._2 + 1))).force.toList
+        rec(newList, i + 1)
+      }
+
     }
-    rec(0, 0)
+    rec(l.head, 1)
   }
 
     "If all the numbers from 1 to 1000 (one thousand) inclusive were written out" in {
-      maximumValuePath(smallTriangle) must equalTo(23)
-      maximumValuePath(bigTriangle) must equalTo(1074)
-      //maximumValuePathList(hugeTriangle) must equalTo(1074)
+      maxValuePath(smallTriangle) must equalTo(23)
+      maxValuePath(bigTriangle) must equalTo(1074)
+      maxValuePathList(hugeTriangle) must equalTo(7273)
     }
   }
 }
