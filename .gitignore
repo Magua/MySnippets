@@ -1,9 +1,12 @@
 .DS_Store
-
-ScalaSnippets/.history
-
-ScalaSnippets/target/
-
-euler/.history
+target/
 
 *.swp
+
+.cache
+.history
+.classpath
+
+.project
+
+*.class
