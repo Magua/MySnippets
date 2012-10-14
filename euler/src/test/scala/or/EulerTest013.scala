@@ -126,6 +126,9 @@ class EulerTest013 extends Specification {
     }
     if (overflow(result)) result.substring(1) else result
   }
+  def multiply(x: String, y: Int): String = {
+    (2 to y).toList.foldLeft(x)((acc, i) => addition(acc, x))
+  }
   def sum(numberList: List[String]) = numberList.foldLeft("")((n1, n2) => addition(n1, n2))
 
   "Work out the first ten digits of the sum of the following one-hundred 50-digit numbers." should {

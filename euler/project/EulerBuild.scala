@@ -7,8 +7,7 @@ object EulerBuild extends Build {
     id = "euler",
     base = file("."),
     settings = Project.defaultSettings ++
-      scalariformSettings ++
-      Seq(
+    Seq(
       name := "euler",
       organization := "or",
       version := "0.1-SNAPSHOT",
